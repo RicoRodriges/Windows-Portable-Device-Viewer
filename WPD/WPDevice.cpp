@@ -206,6 +206,8 @@ WPDevice::WPDevice(const std::wstring &path) {
 }
 
 WPDevice::~WPDevice() {
+	if (keys)
+		keys->Release();
 	if (resources)
 		resources->Release();
 	if (properties)
