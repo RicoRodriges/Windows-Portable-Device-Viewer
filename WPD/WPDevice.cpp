@@ -374,7 +374,7 @@ bool WPDevice::getFileCharParam(const std::wstring &path, std::wstring *str, con
 	if (FAILED(hr)) { setError(6, hr); return false; }
 
 	wchar_t *temp;
-	hr = objectProperties->GetStringValue(WPD_OBJECT_ORIGINAL_FILE_NAME, &temp);
+	hr = objectProperties->GetStringValue(key, &temp);
 	if (FAILED(hr)) {
 		objectProperties->Release();
 		setError(7, hr);
