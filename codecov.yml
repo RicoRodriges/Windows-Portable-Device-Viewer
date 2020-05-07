@@ -1,0 +1,5 @@
+ignore:
+  - "example/*"
+  - "test/*"
+fixes:
+  - "projects/*/::"
