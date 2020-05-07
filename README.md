@@ -1,57 +1,78 @@
 # Windows portable device viewer
+[![Build status](https://ci.appveyor.com/api/projects/status/nquknw2kly0ayqul/branch/master?svg=true)](https://ci.appveyor.com/project/RicoRodriges/windows-portable-device-viewer/branch/master)
+[![codecov](https://codecov.io/gh/RicoRodriges/Windows-Portable-Device-Viewer/branch/master/graph/badge.svg)](https://codecov.io/gh/RicoRodriges/Windows-Portable-Device-Viewer)
+
 This set of classes allows viewing files on portable devices such as IPhones, digital cameras and other windows portable devices (WPD). Currently implemented in read-only mode.
+
+Available classes:
 * `WPDEnumerator` allows to get information about all connected portable devices.
-* `WPDevice` allows interaction with a particular device and its file system.
-* `WPDFileEnumerator` displays all files in a specific directory.
+* `WPDDevice` interacts with a particular devices and its file system.
+* `WPDObject` is an object (file, directory or storage).
+* `WPDObjectIterator` displays all files in a specific directory.
+* `WPDException` is runtime exception with HRESULT code.
 
-## WPDEnumerator class
-The `refreshDeviceList` method refreshes the list of devices that are connected to the computer.
+### How to use
+You can find examples in [examples](examples) directory.
 
-The `getDeviceCount` method returns number of connected devices.
-
-The `getDevicePath` method returns string to access the device with `deviceIndex` index. The `deviceIndex` can take values from `0` to `getDeviceCount()-1`.
-``` cpp
-bool getDevicePath (int deviceIndex, std :: wstring * path)
-```
-For information about the device, you can use one of the following methods:
-``` cpp
-bool getFriendlyName (const std :: wstring & path, std :: wstring * str);
-bool getManufacturer (const std :: wstring & path, std :: wstring * str);
-bool getDescription (const std :: wstring & path, std :: wstring * str);
+Use in cmake project:
+```cmake
+option(BUILD_SHARED_LIBS "" OFF)
+add_subdirectory(wpd)
 ```
 
-## WPDevice class
-Constructor opens the device. If `WPDevice::getError` returned 0, then device was successfully opened.
-``` cpp
-WPDevice (const std :: wstring & path);
-```
-The `getFileEnumerator` method returns enumerator, which contains all files in directory. If `path` is NULL, then enumerator contains all files (storages) from root folder. The `enumerator` mustn't be NULL.
-``` cpp
-bool getFileEnumerator (const std :: wstring * path, WPDFileEnumerator * enumerator);
-```
-The `getFileName` method returns name of the object/file.
+Here is some tips:
+* This library is not thread-safe and will never be because it may produce "object in use" errors by the Microsoft API design. Do not use `WPDDevice` instance in different threads at the same time.
+* `WPDDevice` is a general class. Another classes have references. Do not destroy `WPDDevice` object if you're going to continue working with device's objects.
+* If you need some information about object you could use `WPDObject` instance or `WPDDevice` methods:
+  * `WPDObject` is lazy, has cache and uses a single call to get all information first time. Use it to get all information.
+  * `WPDDevice` uses several calls but always gives fresh information. Use it to get only a small set of object attributes.
 
-The `getObjectType` method returns the GUID of the object (See more [MSDN](https://msdn.microsoft.com/en-us/library/windows/hardware/ff597558(v=vs.85).aspx)). If `guid` equal `WPD_CONTENT_TYPE_FUNCTIONAL_OBJECT`, then you can call `getFunctionalObjectCategoty` method. If it returns `WPD_FUNCTIONAL_CATEGORY_STORAGE`, then the file is storage.
+## Build
 
-For storages:
-``` cpp
-bool getSpaceFree (const std :: wstring & path, unsigned long long * size);
-bool getSpace (const std :: wstring & path, unsigned long long * size);
-bool getFileSystem (const std :: wstring & path, std :: wstring * str);
-```
-For other files:
-``` cpp
-bool getFileSize (const std :: wstring & path, unsigned long long * size);
-bool getFileDateModified (const std :: wstring & path, SYSTEMTIME * dateModif);
-bool getFileDateCreated (const std :: wstring & path, SYSTEMTIME * dateCreate);
-bool copyFile (const std :: wstring & path, const std :: wstring & newFile, const FILETIME * dateCreate = 0, const FILETIME * dateModif = 0);
+### Prerequisites
+* Visual Studio or another C++11 compiler
+* [CMake](https://cmake.org/) 3.8+
+
+### Generation of project
+Generate cmake project like this: 
+```cmd
+mkdir build
+cd build
+cmake -DPARAM1=OFF -DPARAM2=ON -G "cmake generator" -A "cmake platform"
 ```
 
-## WPDFileEnumerator class
-For enumeration of files in directory, use the function `WPDevice::getFileEnumerator`.
+Available parameters:
+* `BUILD_SHARED_LIBS ON/OFF` - compile as shared or static library.
+* `BUILD_EXAMPLE ON/OFF` - compile examples from [examples](examples) directory.
+* `BUILD_TESTS ON/OFF` - compile unit tests.
 
-The `getNextFile` method returns the number of files stored in array `paths` size `pathsNum`.
-``` cpp
-int getNextFile (std :: wstring * paths, int pathsNum);
+Generate project as 64-bit static library for Visual Studio 2017:
+```cmd
+cmake -DBUILD_SHARED_LIBS=OFF -G "Visual Studio 15 2017" -A "x64"
 ```
-The `Skip` skips a specified number of objects. The `Reset` resets the enumerator to the beginning.
+
+### Compile
+```cmd
+cmake --build . --config "Release"
+```
+where `--config` could be `Debug`, `Release`
+
+### Running tests
+Tests are powered by [Catch2](https://github.com/catchorg/Catch2) and [FakeIt](https://github.com/eranpeer/FakeIt).
+
+The project must be compiled as a static library with `Debug` config and `BUILD_TESTS=ON` parameter.
+```cmd
+cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTS=ON
+cmake --build . --config "Debug"
+```
+
+After all build steps unit tests can be executed
+```cmd
+cd build
+ctest
+```
+or without `ctest`:
+```cmd
+cd build/Debug
+tests.exe
+```
