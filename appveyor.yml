@@ -1,15 +1,15 @@
-image:
+#image:
 #  - Visual Studio 2015
-  - Visual Studio 2017
+#  - Visual Studio 2017
 #  - Visual Studio 2019
 
 platform:
   - x64
-#  - Win32
+  - Win32
 
 configuration:
   - Debug
-#  - Release
+  - Release
 
 environment:
   PATH: 'C:\Program Files\OpenCppCoverage;C:\Python34;C:\Python34\Scripts;%PATH%'
@@ -19,40 +19,40 @@ environment:
   CODECOV_TOKEN:
     secure: gzuSoiX29MlndKBYtcvOHjBN8BKAR40o37fh58LUa8g9VXkFDOBkUto+YmNYf4La
   CODECOV_VERSION: 2.0.15
-  CURL_CONNECT_TIMEOUT: 300
-  CURL_MAX_TIME: 1800
-  CURL_RETRY: 10
-  CURL_RETRY_DELAY: 10
+#  CURL_CONNECT_TIMEOUT: 300
+#  CURL_MAX_TIME: 1800
+#  CURL_RETRY: 10
+#  CURL_RETRY_DELAY: 10
   PIP_RETRY: 10
 
   matrix:
-#    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2015'
-#      TOOLCHAIN: msvc
-#      MSVC_VERSION: 14.0
-#      RUNTIME_LINKAGE: shared
-#    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2015'
-#      TOOLCHAIN: msvc
-#      MSVC_VERSION: 14.0
-#      RUNTIME_LINKAGE: static
-#
-#    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2017'
-#      TOOLCHAIN: msvc
-#      MSVC_VERSION: 14.1
-#      RUNTIME_LINKAGE: shared
+    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2015'
+      TOOLCHAIN: msvc
+      MSVC_VERSION: 14.0
+      RUNTIME_LINKAGE: shared
+    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2015'
+      TOOLCHAIN: msvc
+      MSVC_VERSION: 14.0
+      RUNTIME_LINKAGE: static
+
+    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2017'
+      TOOLCHAIN: msvc
+      MSVC_VERSION: 14.1
+      RUNTIME_LINKAGE: shared
     - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2017'
       TOOLCHAIN: msvc
       MSVC_VERSION: 14.1
       RUNTIME_LINKAGE: static
       COVERAGE_BUILD_CANDIDATE: 1
 
-#    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2019'
-#      TOOLCHAIN: msvc
-#      MSVC_VERSION: 14.2
-#      RUNTIME_LINKAGE: shared
-#    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2019'
-#      TOOLCHAIN: msvc
-#      MSVC_VERSION: 14.2
-#      RUNTIME_LINKAGE: static
+    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2019'
+      TOOLCHAIN: msvc
+      MSVC_VERSION: 14.2
+      RUNTIME_LINKAGE: shared
+    - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2019'
+      TOOLCHAIN: msvc
+      MSVC_VERSION: 14.2
+      RUNTIME_LINKAGE: static
 
 install:
   - ps: .\ci\install.ps1
