@@ -16,8 +16,12 @@ You can find examples in [examples](examples) directory.
 
 Use in cmake project:
 ```cmake
+# Compile
 option(BUILD_SHARED_LIBS "" OFF)
-add_subdirectory(wpd)
+add_subdirectory(wpd) # Directory with cloned repository
+
+# Link
+target_link_libraries(my_target_name WPD)
 ```
 
 Here is some tips:

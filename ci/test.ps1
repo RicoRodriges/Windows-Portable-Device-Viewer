@@ -1,5 +1,8 @@
 Set-Location -Path "${env:BUILD_HOME}"
 
+if (-not (${env:COVERAGE_BUILD} -eq "True")) {
+  exit 0
+}
 
 $test_cmd = "ctest.exe --build-config ""${env:CONFIGURATION}"" --verbose"
 if (${env:COVERAGE_BUILD} -eq "True") {

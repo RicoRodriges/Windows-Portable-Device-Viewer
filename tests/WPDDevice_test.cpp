@@ -362,7 +362,7 @@ TEST_CASE("WPDDevice & WPDObject classes tests") {
         IPortableDeviceValues &clientInfo = clientInfoMock.get();
         {
             WPDDevice device{devicePath, mockToPtr(d), mockToPtr(dk), mockToPtr(clientInfo)};
-            WPD::WPDObject root{&device, L""};
+            WPD::WPDObject root = device.getObject(L"");
 
             {
                 auto it = root.begin();
